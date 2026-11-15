@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ems-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-ems_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_root_password_example}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - data-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${DB_NAME:-ems_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # Cổng Database mặc định KHÔNG publish ra ngoài host để đảm bảo an ninh (Least Exposure).
+    # Chỉ mở cổng trong môi trường debug/dev khi chạy kèm docker-compose.dev.yml và bind 127.0.0.1:
+    # ports:
+    #   - "127.0.0.1:5433:5432"
+
+  backend:
+    build:
+      context: ./BE
+      dockerfile: Dockerfile
+    container_name: ems-backend
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/${DB_NAME:-ems_db}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-ems_db}
+      MIGRATION_USER: ${POSTGRES_USER:-postgres}
+      MIGRATION_PASSWORD: ${POSTGRES_PASSWORD:-postgres_root_password_example}
+      APP_USER: ${APP_USER:-app_user}
+      APP_USER_PASSWORD: ${APP_USER_PASSWORD:-app_user_password_example}
+      SERVER_PORT: 8080
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_must_be_at_least_256_bits_length_for_hs256!}
+      JWT_EXPIRATION_MINUTES: ${JWT_EXPIRATION_MINUTES:-30}
+      APP_MAINTENANCE_DUE_SOON_DAYS: ${APP_MAINTENANCE_DUE_SOON_DAYS:-7}
+      APP_AUDIT_MANAGER_CAN_VIEW: ${APP_AUDIT_MANAGER_CAN_VIEW:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-net
+      - data-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/v3/api-docs || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./FE
+      dockerfile: Dockerfile
+    container_name: ems-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - public-net
+      - app-net
+
+  gateway:
+    image: nginx:alpine
+    container_name: ems-gateway
+    restart: unless-stopped
+    profiles:
+      - gateway
+    ports:
+      - "443:443"
+    volumes:
+      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/gateway/certs:/etc/nginx/certs:ro
+    depends_on:
+      - frontend
+    networks:
+      - public-net
+
+networks:
+  public-net:
+    driver: bridge
+  app-net:
+    driver: bridge
+  data-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
