@@ -1,9 +1,5 @@
 version: '3.8'
 
-# File cấu hình override cho môi trường Local Dev / Debug
-# Mặc định docker-compose.yml KHÔNG publish cổng PostgreSQL.
-# Khi cần debug DB từ host (ví dụ psql hoặc DBeaver), chạy:
-# docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db
 services:
   db:
     ports:
