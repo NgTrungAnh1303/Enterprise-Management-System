@@ -10,6 +10,7 @@ spring:
     password: postgres123
     locations: classpath:db/migration,classpath:db/seed-dev
     baseline-on-migrate: true
+    create-schemas: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,8 +19,15 @@ spring:
       hibernate:
         format_sql: true
 
+DB_HOST: 127.0.0.1
+DB_PORT: 5432
+DB_NAME: ems_db
+MIGRATION_USER: postgres
+MIGRATION_PASSWORD: postgres123
+
 logging:
   level:
     com.fpt.ems.be: DEBUG
     org.springframework.security: DEBUG
+    com.fpt.ems.be.config.DatabaseAutoCreator: INFO
 
