@@ -19,10 +19,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    # Cổng Database mặc định KHÔNG publish ra ngoài host để đảm bảo an ninh (Least Exposure).
-    # Chỉ mở cổng trong môi trường debug/dev khi chạy kèm docker-compose.dev.yml và bind 127.0.0.1:
-    # ports:
-    #   - "127.0.0.1:5433:5432"
 
   backend:
     build:

@@ -434,12 +434,3 @@ Equipment statuses, work order progressions, and incident classifications are bo
 
 ---
 
-# Project Context
-
-- **Project:** Equipment Maintenance & Service Scheduling System (EMS)
-- **Module:** P05 — Enterprise Application Development & Security
-- **Institution:** FPT University
-- **Team:**
-  - **Trung Anh** (Leader — Core Backend, Security & Architecture)
-  - **Trung** (Management & Technician Workflows)
-  - **Khương** (User Experience, Authentication & Incident Workflows)
