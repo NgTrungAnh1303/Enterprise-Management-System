@@ -1,0 +1,61 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  application:
+    name: p05-ems-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ems_db}}
+    username: ${APP_USER:postgres}
+    password: ${APP_USER_PASSWORD:postgres123}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    url: ${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ems_db}}
+    user: ${MIGRATION_USER:postgres}
+    password: ${MIGRATION_PASSWORD:postgres123}
+    locations: classpath:db/migration
+    out-of-order: true
+    placeholders:
+      app_user_password: ${APP_USER_PASSWORD:postgres123}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+# JWT Configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET:super_secret_jwt_key_must_be_at_least_256_bits_length_for_hs256!}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:30}
+  maintenance:
+    due-soon-days: ${APP_MAINTENANCE_DUE_SOON_DAYS:7}
+  audit:
+    manager-can-view: ${APP_AUDIT_MANAGER_CAN_VIEW:false}
+  registration:
+    enabled: ${APP_REGISTRATION_ENABLED:true}
+    require-approval: ${APP_REGISTRATION_REQUIRE_APPROVAL:true}
+    rate-limit-per-hour: ${APP_REGISTRATION_RATE_LIMIT_PER_HOUR:5}
+
+# SpringDoc OpenAPI Documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
