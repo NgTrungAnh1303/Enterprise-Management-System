@@ -72,11 +72,17 @@ export default function DataTable({
                   {columns.map((col, colIdx) => {
                     const cellKey = col.key || col.field;
                     const rawVal = cellKey != null ? row[cellKey] : undefined;
-                    const cellContent = col.render
-                      ? col.render(row, rowIdx)
-                      : rawVal != null
-                      ? String(rawVal)
-                      : '—';
+                    let cellContent = '—';
+                    if (col.render) {
+                      cellContent = col.render(row, rowIdx);
+                    } else if (rawVal != null) {
+                      cellContent = typeof rawVal === 'object' ? JSON.stringify(rawVal) : String(rawVal);
+                    }
+
+                    // Protect against any rendered objects that are not valid React elements
+                    if (cellContent != null && typeof cellContent === 'object' && !React.isValidElement(cellContent)) {
+                      cellContent = String(cellContent.label || cellContent.name || cellContent.title || cellContent.code || JSON.stringify(cellContent));
+                    }
 
                     return (
                       <td key={cellKey || colIdx} className={col.cellClassName || ''}>
@@ -87,7 +93,7 @@ export default function DataTable({
                 </tr>
               );
             })}
-          </tbody>fdddfdfdfd
+          </tbody>
         </Table>
       </div>
 
