@@ -193,7 +193,7 @@ export default function EquipmentFormPage() {
                         <FormField
                           name="typeId"
                           label="Loại thiết bị"
-                          as="select"
+                          type="select"
                           required
                         >
                           <option value="">-- Chọn loại thiết bị --</option>
@@ -209,7 +209,7 @@ export default function EquipmentFormPage() {
                         <FormField
                           name="locationId"
                           label="Vị trí lắp đặt"
-                          as="select"
+                          type="select"
                           required
                         >
                           <option value="">-- Chọn vị trí lắp đặt --</option>
