@@ -44,18 +44,28 @@ const BADGE_CONFIG = {
   },
 };
 
-export default function StatusBadge({ type = 'equipment', status, label, showIcon = true, className = '' }) {
-  if (!status) return null;
+export default function StatusBadge({ type = 'equipment', status, value, label, showIcon = true, className = '' }) {
+  const rawStatus = status !== undefined ? status : value;
+  if (!rawStatus) return null;
+
+  // Protect against objects passed as status
+  const statusStr = typeof rawStatus === 'object'
+    ? (rawStatus.dueLabel || rawStatus.status || rawStatus.label || '')
+    : String(rawStatus);
+
+  if (!statusStr) return null;
 
   const typeConfig = BADGE_CONFIG[type] || {};
-  const config = typeConfig[status] || {
-    label: label || status,
+  const config = typeConfig[statusStr] || {
+    label: typeof label === 'string' ? label : statusStr,
     color: '#475569',
     bg: '#F1F5F9',
     border: '#CBD5E1',
   };
 
-  const displayText = label || config.label || status;
+  const displayText = typeof label === 'string'
+    ? label
+    : (typeof config.label === 'string' ? config.label : statusStr);
 
   return (
     <span
