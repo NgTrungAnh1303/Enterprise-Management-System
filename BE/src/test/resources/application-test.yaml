@@ -1,0 +1,16 @@
+spring:
+  flyway:
+    locations: classpath:db/migration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+app:
+  jwt:
+    secret: secure_test_jwt_secret_key_minimum_256_bits_for_testing_only!
+
+logging:
+  level:
+    org.flywaydb: INFO
+    com.fpt.ems.be: INFO
