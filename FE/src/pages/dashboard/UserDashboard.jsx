@@ -37,23 +37,23 @@ export default function UserDashboard() {
     {
       header: 'Mã tra cứu',
       key: 'trackingCode',
-      render: (val, row) => (
+      render: (row) => (
         <span className="font-monospace-code fw-semibold text-primary">
-          {val || row.code || `INC-${row.incidentId}`}
+          {row.trackingCode || row.code || `INC-${row.incidentId}`}
         </span>
       ),
     },
     {
       header: 'Thiết bị',
       key: 'equipmentCode',
-      render: (val) => <span className="font-monospace-code fw-medium">{val || '—'}</span>,
+      render: (row) => <span className="font-monospace-code fw-medium">{row.equipmentCode || row.equipment?.code || '—'}</span>,
     },
     {
       header: 'Mô tả sự cố',
       key: 'description',
-      render: (val) => (
+      render: (row) => (
         <span className="text-secondary small text-truncate d-inline-block" style={{ maxWidth: '300px' }}>
-          {val || '—'}
+          {row.description || '—'}
         </span>
       ),
     },
@@ -62,14 +62,14 @@ export default function UserDashboard() {
       key: 'severity',
       cellClassName: 'text-center',
       headerClassName: 'text-center',
-      render: (val) => (val ? <StatusBadge type="severity" status={val} /> : <span className="text-muted small">Chưa phân loại</span>),
+      render: (row) => (row.severity ? <StatusBadge type="severity" status={row.severity} /> : <span className="text-muted small">Chưa phân loại</span>),
     },
     {
       header: 'Trạng thái',
       key: 'status',
       cellClassName: 'text-center',
       headerClassName: 'text-center',
-      render: (val) => <StatusBadge type="incident" status={val} />,
+      render: (row) => <StatusBadge type="incident" status={row.status} />,
     },
   ];
 
@@ -86,7 +86,7 @@ export default function UserDashboard() {
         }
       />
 
-      {}
+      {/* Quick Summary Cards */}
       <Row className="g-3 mb-4">
         <Col sm={6} lg={4}>
           <Card className="border border-light-subtle shadow-sm h-100">
@@ -146,7 +146,7 @@ export default function UserDashboard() {
         </Col>
       </Row>
 
-      {}
+      {/* Recent Incidents Table */}
       <div className="mb-2 d-flex align-items-center justify-content-between">
         <h2 className="h6 fw-bold text-dark mb-0">Sự cố kỹ thuật đã báo gần đây</h2>
         <Link to="/user/incidents" className="small text-decoration-none text-primary fw-medium">
