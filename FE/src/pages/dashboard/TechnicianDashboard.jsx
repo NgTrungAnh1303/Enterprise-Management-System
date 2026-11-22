@@ -39,44 +39,44 @@ export default function TechnicianDashboard() {
     {
       header: 'Mã Phiếu (WO)',
       key: 'woCode',
-      render: (val, row) => (
+      render: (row) => (
         <span className="font-monospace-code fw-semibold text-primary">
-          {val || `WO-${row.woId}`}
+          {row.woCode || `WO-${row.woId}`}
         </span>
       ),
     },
     {
       header: 'Thiết bị',
       key: 'equipmentCode',
-      render: (val) => <span className="font-monospace-code fw-medium">{val || '—'}</span>,
+      render: (row) => <span className="font-monospace-code fw-medium">{row.equipmentCode || row.equipment?.code || '—'}</span>,
     },
     {
       header: 'Loại bảo trì',
       key: 'type',
-      render: (val) => (
+      render: (row) => (
         <span className="badge bg-light text-dark border small">
-          {val === 'PERIODIC' ? 'Định kỳ' : 'Sửa chữa'}
+          {row.type === 'PERIODIC' ? 'Định kỳ' : 'Sửa chữa'}
         </span>
       ),
     },
     {
       header: 'Kỳ bảo trì',
       key: 'period',
-      render: (val) => <span className="text-secondary small">{val || '—'}</span>,
+      render: (row) => <span className="text-secondary small">{row.period || '—'}</span>,
     },
     {
       header: 'Trạng thái',
       key: 'status',
       cellClassName: 'text-center',
       headerClassName: 'text-center',
-      render: (val) => <StatusBadge type="workOrder" status={val} />,
+      render: (row) => <StatusBadge type="workOrder" status={row.status} />,
     },
     {
       header: 'Thao tác',
       key: 'actions',
       cellClassName: 'text-end',
       headerClassName: 'text-end',
-      render: (_, row) => (
+      render: (row) => (
         <Link
           to={`/technician/work-orders/${row.woId || row.id}`}
           className="btn btn-sm btn-outline-primary py-0 px-2"
@@ -94,7 +94,7 @@ export default function TechnicianDashboard() {
         subtitle="Quản lý và thực hiện các phiếu bảo trì, xử lý sự cố thiết bị được phân công"
       />
 
-      {}
+      {/* Summary KPI Cards */}
       <Row className="g-3 mb-4">
         <Col sm={6} lg={4}>
           <Card className="border border-light-subtle shadow-sm h-100">
@@ -154,7 +154,7 @@ export default function TechnicianDashboard() {
         </Col>
       </Row>
 
-      {}
+      {/* Assigned Work Orders List */}
       <div className="mb-2 d-flex align-items-center justify-content-between">
         <h2 className="h6 fw-bold text-dark mb-0">Phiếu bảo trì cần xử lý ngay</h2>
         <Link to="/technician/work-orders" className="small text-decoration-none text-primary fw-medium">

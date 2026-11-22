@@ -90,35 +90,39 @@ export default function ManagerDashboard() {
     {
       header: 'Mã thiết bị',
       key: 'equipmentCode',
-      render: (val, row) => (
+      render: (row) => (
         <span className="font-monospace-code fw-semibold text-primary">
-          {val || row.code || `EQ-${row.equipmentId}`}
+          {row.equipmentCode || row.code || `EQ-${row.equipmentId}`}
         </span>
       ),
     },
     {
       header: 'Tên / Model',
       key: 'model',
-      render: (val, row) => `${row.brand || ''} ${val || ''}`.trim() || '—',
+      render: (row) => `${row.brand || ''} ${row.model || ''}`.trim() || '—',
     },
     {
       header: 'Ngày đến hạn bảo trì',
       key: 'nextDueDate',
-      render: (val) => <span className="font-monospace-code small">{val || 'Chưa lập kế hoạch'}</span>,
+      render: (row) => (
+        <span className="font-monospace-code small">
+          {row.nextDueDate ? String(row.nextDueDate) : 'Chưa lập kế hoạch'}
+        </span>
+      ),
     },
     {
       header: 'Tình trạng hạn',
-      key: 'label',
+      key: 'dueLabel',
       cellClassName: 'text-center',
       headerClassName: 'text-center',
-      render: (val) => <StatusBadge type="due" status={val} />,
+      render: (row) => <StatusBadge type="due" status={row.dueLabel || row.label} />,
     },
     {
       header: 'Thao tác',
       key: 'actions',
       cellClassName: 'text-end',
       headerClassName: 'text-end',
-      render: (_, row) => (
+      render: (row) => (
         <Button
           as={Link}
           to={`/manager/work-orders/new?equipmentId=${row.equipmentId}`}
@@ -145,7 +149,7 @@ export default function ManagerDashboard() {
         }
       />
 
-      {}
+      {/* KPI Cards Row */}
       <Row className="g-3 mb-4">
         <Col sm={6} xl={2}>
           <Card className="border border-light-subtle shadow-sm h-100">
@@ -208,7 +212,7 @@ export default function ManagerDashboard() {
         </Col>
       </Row>
 
-      {}
+      {/* Visual Chart & Alerts Row */}
       <Row className="g-4 mb-4">
         <Col lg={4}>
           <Card className="border border-light-subtle shadow-sm h-100">
